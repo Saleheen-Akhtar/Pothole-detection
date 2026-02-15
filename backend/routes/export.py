@@ -5,8 +5,8 @@ import io
 from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
-from database.database import get_db
-from models.models import ImageMetadata
+from ..database.database import get_db
+from ..models.models import ImageMetadata
 
 router = APIRouter()
 

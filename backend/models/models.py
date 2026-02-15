@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime
-from database.database import Base
+from ..database.database import Base
 from datetime import datetime
 
 class ImageMetadata(Base):

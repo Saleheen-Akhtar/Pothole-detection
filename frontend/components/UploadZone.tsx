@@ -9,7 +9,6 @@ export default function UploadZone() {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -17,7 +16,6 @@ export default function UploadZone() {
       setFile(selected);
       setPreview(URL.createObjectURL(selected));
       setResult(null);
-      setErrorMessage(null);
     }
   };
 
@@ -28,7 +26,6 @@ export default function UploadZone() {
       setFile(selected);
       setPreview(URL.createObjectURL(selected));
       setResult(null);
-      setErrorMessage(null);
     }
   };
 
@@ -39,7 +36,6 @@ export default function UploadZone() {
   const handleUpload = async () => {
     if (!file) return;
     setLoading(true);
-    setErrorMessage(null);
     const formData = new FormData();
     formData.append('file', file);
 
@@ -51,11 +47,7 @@ export default function UploadZone() {
       setResult(response.data);
     } catch (error) {
       console.error("Error uploading file:", error);
-      if (axios.isAxiosError(error)) {
-        setErrorMessage(error.response?.data?.detail ?? "Failed to process image.");
-      } else {
-        setErrorMessage("Failed to process image.");
-      }
+      alert("Failed to process image.");
     } finally {
       setLoading(false);
     }
@@ -123,12 +115,6 @@ export default function UploadZone() {
             'Detect Potholes'
           )}
         </button>
-
-        {errorMessage && (
-          <div className="rounded-lg border border-red-500/40 bg-red-950/40 p-3 text-sm text-red-200">
-            {errorMessage}
-          </div>
-        )}
       </div>
 
       {/* Right Side: Result */}
