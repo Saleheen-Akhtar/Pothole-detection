@@ -1,8 +1,8 @@
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from ..database.database import get_db
-from ..models.models import ImageMetadata, Detection
+from database.database import get_db
+from models.models import ImageMetadata, Detection
 import shutil
 import os
 from ultralytics import YOLO
@@ -24,11 +24,16 @@ if not os.path.exists(model_path):
     print(f"Warning: Trained model not found at {model_path}, using yolov8n.pt")
     model_path = "yolov8n.pt"
 
+using_fallback_model = False
 try:
     model = YOLO(model_path)
 except Exception as e:
     print(f"Error loading model: {e}. Falling back to standard yolov8n.pt")
     model = YOLO("yolov8n.pt")
+    using_fallback_model = True
+
+if model_path == "yolov8n.pt":
+    using_fallback_model = True
 
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 PROCESSED_DIR = os.path.join(BASE_DIR, "processed")
@@ -37,6 +42,20 @@ os.makedirs(PROCESSED_DIR, exist_ok=True)
 
 @router.post("/detect")
 async def detect_potholes(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    model_classes = [str(name).lower() for name in model.names.values()] if hasattr(model, "names") else []
+    has_pothole_class = any("pothole" in class_name for class_name in model_classes)
+
+    if using_fallback_model or not has_pothole_class:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Pothole model is not loaded. Place your trained weights at "
+                "ai-model/weights/best.pt and restart the backend. "
+                "Current model classes: "
+                f"{', '.join(model_classes[:8]) if model_classes else 'unknown'}"
+            ),
+        )
+
     # Sanitize filename
     ext = os.path.splitext(file.filename)[1] if file.filename else ""
     safe_filename = f"{uuid.uuid4()}{ext}"
