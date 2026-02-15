@@ -1,0 +1,12 @@
+ai-model/dataset/train/images/*
+ai-model/dataset/train/labels/*
+ai-model/dataset/valid/images/*
+ai-model/dataset/valid/labels/*
+!ai-model/dataset/**/.gitkeep
+*.pt
+__pycache__
+temp_dataset
+node_modules
+backend/venv
+.next
+ai-model/dataset/**

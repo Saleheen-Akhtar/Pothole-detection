@@ -1,0 +1,14 @@
+import Navbar from '@/components/Navbar';
+import Dashboard from '@/components/Dashboard';
+
+export default function AnalyticsPage() {
+  return (
+    <div className="min-h-screen bg-gray-900 text-white">
+      <Navbar />
+      <main className="pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8">Analytics Dashboard</h1>
+        <Dashboard />
+      </main>
+    </div>
+  );
+}
