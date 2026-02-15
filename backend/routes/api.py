@@ -1,8 +1,8 @@
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from ..database.database import get_db
-from ..models.models import ImageMetadata, Detection
+from database.database import get_db
+from models.models import ImageMetadata, Detection
 import shutil
 import os
 from ultralytics import YOLO
